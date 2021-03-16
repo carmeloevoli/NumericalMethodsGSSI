@@ -15,6 +15,16 @@ cmake_policy(SET CMP0048 NEW)
 include_directories("${CMAKE_SOURCE_DIR}")
 include_directories(external/plog/include/)
 
+# GSL (external)
+find_package(GSL)
+if(GSL_FOUND)
+    set(HAVE_LIBGSL 1)
+    list(APPEND NM_INCLUDES ${GSL_INCLUDE_DIR})
+    list(APPEND NM_LIBRARIES ${GSL_LIBRARIES})
+else(GSL_FOUND)
+    message(FATAL_ERROR "Require GSL: set GSL_HOME")
+endif(GSL_FOUND)
+
 # create the output dir
 #file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/output)
 
@@ -39,6 +49,9 @@ target_link_libraries (trapezium_v2 NM_LIB ${NM_LIBRARIES})
 
 add_executable(trapezium_v3 src/integration/trapezium_v3.cpp)
 target_link_libraries (trapezium_v3 NM_LIB ${NM_LIBRARIES})
+
+add_executable(tridiag src/tridiag/tridiag.cpp)
+target_link_libraries (tridiag NM_LIB ${NM_LIBRARIES})
 
 # show summary
 message (STATUS "CMAKE_SYSTEM .......... = ${CMAKE_SYSTEM}")
