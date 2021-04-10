@@ -50,8 +50,14 @@ target_link_libraries (trapezium_v2 NM_LIB ${NM_LIBRARIES})
 add_executable(trapezium_v3 src/integration/trapezium_v3.cpp)
 target_link_libraries (trapezium_v3 NM_LIB ${NM_LIBRARIES})
 
+add_executable(montecarlo src/integration/montecarlo.cpp)
+target_link_libraries (montecarlo NM_LIB ${NM_LIBRARIES})
+
 add_executable(tridiag src/tridiag/tridiag.cpp)
 target_link_libraries (tridiag NM_LIB ${NM_LIBRARIES})
+
+add_executable(diagnosing src/utilities/diagnosing.cpp)
+target_link_libraries (diagnosing NM_LIB ${NM_LIBRARIES})
 
 # show summary
 message (STATUS "CMAKE_SYSTEM .......... = ${CMAKE_SYSTEM}")
