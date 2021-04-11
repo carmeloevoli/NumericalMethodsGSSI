@@ -27,4 +27,4 @@ m = np.polyfit(logN[0:10], logErr[0:10], 1)
 print (f"slope = {m[0]:6.3f}")
 print (f"norm = {m[1]:6.3f}")
 
-plt.savefig('Integration.pdf')
+plt.savefig('IntegrationError.pdf')

@@ -49,4 +49,5 @@ def plot_integration_results():
     ax.plot(x, -0.5 - 0.5 * x)
     plt.savefig('IntegrationMontecarloResults.pdf')
 
+plot_integration_function()
 plot_integration_results()
