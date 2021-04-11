@@ -6,6 +6,8 @@
 
 #include "timer.h"
 
+namespace NM {
+
 using point = std::pair<double, double>;
 
 std::pair<double, double> randPoint() {
@@ -18,13 +20,26 @@ std::pair<double, double> randPoint() {
 double f(double x) { return 0.5 * std::sin(x * 8.0 * M_PI) + 0.5; }
 bool isBelowCurve(point p) { return f(p.first) < p.second; }
 
-int main() {
-  NM::Timer timer;
-  int N = 10000;
+double integrate(const int N) {
   auto points = std::vector<point>();
   points.resize(N);
   std::generate(points.begin(), points.end(), randPoint);
-  //  for (auto point : points) std::cout << point.first << " " << point.second << "\n";
   int goodPoints = std::count_if(points.begin(), points.end(), isBelowCurve);
-  std::cout << goodPoints << " " << std::setprecision(3) << goodPoints / (double)N << "\n";
+  return (double)goodPoints / (double)N;
+}
+
+}  // namespace NM
+
+int main() {
+  NM::Timer timer;
+  int currentStepOrder = 5;
+  while (currentStepOrder < 25) {
+    const auto nSteps = std::pow(2, currentStepOrder);
+    for (size_t i = 0; i < 50; ++i) {
+      const double I = NM::integrate(nSteps);
+      std::cout << currentStepOrder << "\t" << std::setprecision(10) << I << "\n";
+    }
+    currentStepOrder++;
+  }
+  return 0;
 }
