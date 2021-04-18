@@ -56,6 +56,12 @@ target_link_libraries (montecarlo NM_LIB ${NM_LIBRARIES})
 add_executable(tridiag src/tridiag/tridiag.cpp)
 target_link_libraries (tridiag NM_LIB ${NM_LIBRARIES})
 
+add_executable(rk2 src/ode/rk2.cpp)
+target_link_libraries (rk2 NM_LIB ${NM_LIBRARIES})
+
+add_executable(lorenz src/ode/lorenz.cpp)
+target_link_libraries (lorenz NM_LIB ${NM_LIBRARIES})
+
 add_executable(diagnosing src/utilities/diagnosing.cpp)
 target_link_libraries (diagnosing NM_LIB ${NM_LIBRARIES})
 
