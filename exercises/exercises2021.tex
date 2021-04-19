@@ -1,0 +1,38 @@
+\documentclass[10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{fullpage}
+\usepackage{exsheets}
+
+\linespread{1.1}
+\setlength\parindent{0pt}
+
+\begin{document}
+
+The equation of motion for the pendulum is
+%
+\begin{equation}\label{eq:pendulum}
+\frac{d^2\omega}{dt^2} = - \frac{g}{l} \sin \theta
+\end{equation}
+
+using the trick of introducing $\omega$
+
+\begin{eqnarray}
+\frac{d\theta}{dt} & = & \omega \\ 
+\frac{d\omega}{dt} & = & -\frac{g}{l} \sin \theta
+\end{eqnarray}
+
+with the initial condition $(\theta, \omega) = (179^\circ, 0)$
+
+\begin{question}
+Compute numerically the solution of the equation~\ref{eq:pendulum} using Runge-Kutta second-order method.
+\end{question}
+
+\begin{question}
+Plot the total energy of system:
+%
+\begin{equation}
+E = U + K = m g L (1 - \cos \theta) + \frac{1}{2} m (\omega^2 L^2) 
+\end{equation}
+\end{question}
+
+\end{document}
