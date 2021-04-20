@@ -8,30 +8,31 @@
 
 \begin{document}
 
-The equation of motion for the pendulum is
+The nonlinear pendulum.
+
+The equation of motion for the pendulum using Newton's second law can be written in terms of the displacement angle $\theta$ as:
 %
 \begin{equation}\label{eq:pendulum}
-\frac{d^2\omega}{dt^2} = - \frac{g}{l} \sin \theta
+\frac{d^2\theta}{dt^2} = - \frac{g}{l} \sin \theta
 \end{equation}
 
-using the trick of introducing $\omega$
-
+We first use the trick to turn the second-order equation into two first-order equations by introducing a new variable $\omega$:
+%
 \begin{eqnarray}
-\frac{d\theta}{dt} & = & \omega \\ 
-\frac{d\omega}{dt} & = & -\frac{g}{l} \sin \theta
+\frac{d\theta}{dt} & = & \omega \label{eq:pendulum1}\\ 
+\frac{d\omega}{dt} & = & -\frac{g}{l} \sin \theta \label{eq:pendulum2}
 \end{eqnarray}
 
-with the initial condition $(\theta, \omega) = (179^\circ, 0)$
-
 \begin{question}
-Compute numerically the solution of the equation~\ref{eq:pendulum} using Runge-Kutta second-order method.
+Write a program to solve the equations~(\ref{eq:pendulum1}) and (\ref{eq:pendulum2}) using the second-order Runge-Kutta method for a pendulum with a 10 cm arm.
+Calculate the angle $\theta$ of displacement for several periods of the pendulum starting from the initial condition $(\theta, \omega) = (179^\circ, 0)$.
 \end{question}
 
 \begin{question}
-Plot the total energy of system:
+Make a plot of the total energy of the system as a function of time:
 %
 \begin{equation}
-E = U + K = m g L (1 - \cos \theta) + \frac{1}{2} m (\omega^2 L^2) 
+E = K + U = \frac{1}{2} m (\omega^2 L^2) - m g L (1 - \cos \theta) 
 \end{equation}
 \end{question}
 
