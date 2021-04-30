@@ -92,24 +92,24 @@ std::vector<double> LaxWendroff(std::vector<double> f, double alpha) {
 std::vector<double> CrankNicolson(std::vector<double> f, double alpha) {
   auto N = f.size();
   std::vector<double> fNew(N);
-  std::vector<double> centralDiagonal(N);
-  std::vector<double> rhs(N);
-  std::vector<double> lowerDiagonal(N - 1);
-  std::vector<double> upperDiagonal(N - 1);
 
-  std::fill(centralDiagonal.begin(), centralDiagonal.end(), 1. + 0.5 * alpha);
-  std::fill(lowerDiagonal.begin(), lowerDiagonal.end(), -0.5 * alpha);
-  std::fill(upperDiagonal.begin(), upperDiagonal.end(), 0.);
+  std::vector<double> centralDiagonal(N - 2);
+  std::vector<double> rhs(N - 2);
+  std::vector<double> lowerDiagonal(N - 3);
+  std::vector<double> upperDiagonal(N - 3);
 
-  for (size_t i = 0; i < N; ++i) {
-    if (i == 0)
-      rhs.at(i) = (1. - 0.5 * alpha) * f[0] + 0.5 * alpha * f[N - 1];
-    else
-      rhs.at(i) = (1. - 0.5 * alpha) * f[i] + 0.5 * alpha * f[i - 1];
+  std::fill(centralDiagonal.begin(), centralDiagonal.end(), 1.);
+  std::fill(lowerDiagonal.begin(), lowerDiagonal.end(), -0.25 * alpha);
+  std::fill(upperDiagonal.begin(), upperDiagonal.end(), -0.25 * alpha);
+
+  for (size_t i = 1; i < N - 1; ++i) {
+    rhs[i - 1] = f[i] - 0.25 * alpha * (f[i + 1] - f[i - 1]);
   }
 
-  GSL::gsl_linalg_solve_tridiag(centralDiagonal, upperDiagonal, lowerDiagonal, rhs, fNew);
+  std::vector<double> solution(N - 2);
+  GSL::gsl_linalg_solve_tridiag(centralDiagonal, upperDiagonal, lowerDiagonal, rhs, solution);
 
+  for (size_t i = 1; i < N - 1; ++i) fNew[i] = solution[i - 1];
   return fNew;
 }
 
@@ -197,33 +197,68 @@ double runSim(Algorithms algorithm, double dt, double tMax, int xOrder, std::str
   return NM::computeRMSError(x, f, v);
 }
 
-int main() {
-  //   {
-  //     runSim(UPWIND, 0.001, 1, 7, "upwind_1_7");
-  //     runSim(UPWIND, 0.001, 1, 8, "upwind_1_8");
-  //     runSim(UPWIND, 0.001, 1, 9, "upwind_1_9");
-  //     runSim(LAXF, 0.001, 1, 7, "laxf_1_7");
-  //     runSim(LAXF, 0.001, 1, 8, "laxf_1_8");
-  //     runSim(LAXF, 0.001, 1, 9, "laxf_1_9");
-  //     runSim(LAXW, 0.001, 1, 7, "laxw_1_7");
-  //     runSim(LAXW, 0.001, 1, 8, "laxw_1_8");
-  //     runSim(LAXW, 0.001, 1, 9, "laxw_1_9");
-  //     runSim(CN, 0.001, 1, 7, "CN_1_7");
-  //     runSim(CN, 0.001, 1, 8, "CN_1_8");
-  //     runSim(CN, 0.001, 1, 9, "CN_1_9");
-  //   }
+double runSimCN(double dt, double tMax, int xOrder, std::string outputFilename) {
+  const size_t xSteps = std::pow(2, xOrder);
+  const double xMin = 0;
+  const double xMax = 1;
+  const auto x = NM::computeLinearArray(xMin, xMax, xSteps);
+  const auto dx = x[1] - x[0];
 
-  {
-    for (size_t i = 4; i < 17; ++i) {
-      std::cout << std::fixed << i << " ";
-      std::cout << std::scientific;
-      std::cout << runSim(UPWIND, 0.00001, 1, i, "test") << " ";
-      std::cout << runSim(LAXF, 0.00001, 1, i, "test") << " ";
-      std::cout << runSim(LAXW, 0.00001, 1, i, "test") << " ";
-      std::cout << 0 << " ";  // runSim(CN, 0.00002, 1, i, "test") << " ";
-      std::cout << "\n";
-    }
+  const double v = 1.;
+  const double alpha = dt * v / dx;
+
+  if (alpha > 0.999) std::cout << "!CFL violated with alpha = " << alpha << "\n";
+
+  std::vector<double> f;
+  f.reserve(xSteps);
+  for (auto xi : x) {
+    const auto value = NM::gaussian(xi, 0.1, 0.01);
+    f.emplace_back(value);
   }
+
+  NM::saveSolution(x, f, 0, outputFilename);
+
+  double t = tMax;
+
+  while (t > dt) {
+    f = NM::CrankNicolson(f, alpha);
+    t -= dt;
+  }
+  f = NM::CrankNicolson(f, v * t / dx);
+
+  NM::saveSolution(x, f, 1, outputFilename);
+
+  return NM::computeRMSError(x, f, v);
+}
+
+int main() {
+  {
+    //   runSim(UPWIND, 0.001, 1, 7, "upwind_1_7");
+    //   runSim(UPWIND, 0.001, 1, 8, "upwind_1_8");
+    //   runSim(UPWIND, 0.001, 1, 9, "upwind_1_9");
+    //   runSim(LAXF, 0.001, 1, 7, "laxf_1_7");
+    //   runSim(LAXF, 0.001, 1, 8, "laxf_1_8");
+    //   runSim(LAXF, 0.001, 1, 9, "laxf_1_9");
+    //   runSim(LAXW, 0.001, 1, 7, "laxw_1_7");
+    //   runSim(LAXW, 0.001, 1, 8, "laxw_1_8");
+    //   runSim(LAXW, 0.001, 1, 9, "laxw_1_9");
+    runSimCN(0.001, 0.6, 7, "CN_1_7");
+    runSimCN(0.001, 0.6, 8, "CN_1_8");
+    runSimCN(0.001, 0.6, 9, "CN_1_9");
+    runSimCN(0.001, 0.6, 11, "CN_1_11");
+  }
+
+  //   {
+  //     for (size_t i = 4; i < 17; ++i) {
+  //       std::cout << std::fixed << i << " ";
+  //       std::cout << std::scientific;
+  //       std::cout << runSim(UPWIND, 0.00001, 1, i, "test") << " ";
+  //       std::cout << runSim(LAXF, 0.00001, 1, i, "test") << " ";
+  //       std::cout << runSim(LAXW, 0.00001, 1, i, "test") << " ";
+  //       std::cout << 0 << " ";  // runSim(CN, 0.00002, 1, i, "test") << " ";
+  //       std::cout << "\n";
+  //     }
+  //   }
 
   return 0;
 }
