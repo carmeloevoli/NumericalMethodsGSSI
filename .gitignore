@@ -2,3 +2,4 @@
 build/
 nm.code-workspace
 plots/build
+*.DS_Store
