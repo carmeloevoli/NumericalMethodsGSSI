@@ -31,6 +31,7 @@ endif(GSL_FOUND)
 # add source files
 set(NM_SRCS
     src/timer.cpp
+    src/gsl.cpp
    )
 
 # make library
@@ -61,6 +62,9 @@ target_link_libraries (rk2 NM_LIB ${NM_LIBRARIES})
 
 add_executable(lorenz src/ode/lorenz.cpp)
 target_link_libraries (lorenz NM_LIB ${NM_LIBRARIES})
+
+add_executable(advection src/pde/advection.cpp)
+target_link_libraries (advection NM_LIB ${NM_LIBRARIES})
 
 add_executable(diagnosing src/utilities/diagnosing.cpp)
 target_link_libraries (diagnosing NM_LIB ${NM_LIBRARIES})
