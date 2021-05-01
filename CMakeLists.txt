@@ -30,9 +30,10 @@ endif(GSL_FOUND)
 
 # add source files
 set(NM_SRCS
-    src/timer.cpp
     src/gsl.cpp
-   )
+    src/timer.cpp
+    src/utils.cpp
+)
 
 # make library
 include_directories (include ${NM_INCLUDES})
@@ -66,7 +67,10 @@ target_link_libraries (lorenz NM_LIB ${NM_LIBRARIES})
 add_executable(advection src/pde/advection.cpp)
 target_link_libraries (advection NM_LIB ${NM_LIBRARIES})
 
-add_executable(diagnosing src/utilities/diagnosing.cpp)
+add_executable(advectionCN src/pde/advection_CN.cpp)
+target_link_libraries (advectionCN NM_LIB ${NM_LIBRARIES})
+
+add_executable(diagnosing src/misc/diagnosing.cpp)
 target_link_libraries (diagnosing NM_LIB ${NM_LIBRARIES})
 
 # show summary
