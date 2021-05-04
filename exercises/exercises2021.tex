@@ -8,7 +8,7 @@
 
 \begin{document}
 
-The nonlinear pendulum.
+\section{Problem: The nonlinear pendulum}
 
 The equation of motion for the pendulum using Newton's second law can be written in terms of the displacement angle $\theta$ as:
 %
@@ -34,6 +34,50 @@ Make a plot of the total energy of the system as a function of time:
 \begin{equation}
 E = K + U = \frac{1}{2} m (\omega^2 L^2) + m g L (1 - \cos \theta) 
 \end{equation}
+\end{question}
+
+\newpage
+
+\section{Problem: The 1-D diffusion equation}
+
+The 1-dimensional diffusion equation assuming constant diffusion coefficient and steady state is
+%
+\begin{equation}\label{eq:diffusion}
+-D\frac{\partial^2 f(x)}{\partial x^2} = Q(x)
+\end{equation}
+%
+where $x$ is a spatial coordinate between $[-H,H]$ and we assume as boundary conditions: $f(x = \pm 1) = 0$.
+
+To provide us with an analytical solution (with the correct boundary conditions) we prescribe 
+%
+\begin{equation}
+\tilde f(x) = \cos(\pi x / 2)
+\end{equation}
+%
+to be an analytical solution and we derive the correspondent source term using equation~(\ref{eq:diffusion}):
+%
+\begin{equation}
+Q(x) = \dots 
+\end{equation}
+
+Equipped now with a source term, we find numerically the solution of the equation~(\ref{eq:diffusion}) as a limit for $t \rightarrow \infty$ of the time-dependent equation:
+%
+\begin{equation}
+\frac{\partial f(x,t)}{\partial t} -D \frac{\partial^2 f(x,t)}{\partial x^2} = Q(x)
+\end{equation}
+
+We do this by using the Crank-Nicolson method and by plotting as a function of time a measure (e.g., 2-norm) of the distance between the numerical solution and the analytical one.
+
+\begin{question}
+Using the parameter values $H = 1$, $D = 0.1$, $dt = 10^{-3}$, $N = 2^8$ the plot should look like the following fig.
+\end{question}
+
+\begin{center}
+\includegraphics[scale=0.35]{DiffusionTimeEvolution.pdf}
+\end{center}
+
+\begin{question}
+Show also the case for $N = 2^9$ and $N = 2^{10}$. What is the error ratio in the limit $t \rightarrow \infty$ between these cases?
 \end{question}
 
 \end{document}
