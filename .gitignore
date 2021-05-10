@@ -1,3 +1,6 @@
+*.aux
+*.log
+*.synctex.gz
 .vscode/
 build/
 nm.code-workspace
