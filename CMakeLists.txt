@@ -4,11 +4,11 @@ cmake_minimum_required(VERSION 3.6)
 set(CMAKE_VERBOSE_MAKEFILE off)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 set(CMAKE_CXX_COMPILER "/usr/local/bin/g++-10")
-set(CMAKE_CXX_FLAGS "-O3 -ftree-vectorize -std=c++11")
+set(CMAKE_CXX_FLAGS "-O3 -ftree-vectorize -std=c++14")
 set(NM_INCLUDES)
 set(NM_LIBRARIES)
 
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 14)
 cmake_policy(SET CMP0048 NEW)
 
 # include
@@ -69,6 +69,15 @@ target_link_libraries (advection NM_LIB ${NM_LIBRARIES})
 
 add_executable(advectionCN src/pde/advection_CN.cpp)
 target_link_libraries (advectionCN NM_LIB ${NM_LIBRARIES})
+
+add_executable(diffusion src/pde/diffusion.cpp)
+target_link_libraries (diffusion NM_LIB ${NM_LIBRARIES})
+
+add_executable(meanvalue src/mcmc/meanvalue.cpp)
+target_link_libraries (meanvalue NM_LIB ${NM_LIBRARIES})
+
+add_executable(isampling src/mcmc/isampling.cpp)
+target_link_libraries (isampling NM_LIB ${NM_LIBRARIES})
 
 add_executable(diagnosing src/misc/diagnosing.cpp)
 target_link_libraries (diagnosing NM_LIB ${NM_LIBRARIES})
