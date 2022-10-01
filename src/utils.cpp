@@ -28,6 +28,10 @@ std::vector<double> logspace(double xMin, double xMax, size_t xSize) {
   return x;
 }
 
+double Gaussian1D(double z, double sigma) {
+  return 1. / sigma / std::sqrt(2. * M_PI) * std::exp(-0.5 * std::pow(z / sigma, 2.));
+}
+
 void saveSolution(std::vector<double> x, std::vector<double> f, int counter, std::string filename) {
   std::ofstream txtfile;
   txtfile.open("output/" + filename + "_" + std::to_string(counter) + ".txt");
