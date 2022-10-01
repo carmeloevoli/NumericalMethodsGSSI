@@ -4,5 +4,7 @@
 .vscode/
 build/
 nm.code-workspace
-plots/build
+pyplots/build
+pyplots/*.pdf
+pyplots/output
 *.DS_Store
