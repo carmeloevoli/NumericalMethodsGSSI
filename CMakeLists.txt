@@ -40,51 +40,53 @@ include_directories (include ${NM_INCLUDES})
 add_library( NM_LIB ${NM_SRCS} ${NM_INCLUDES} )
 
 # make executables
-add_executable(trapezium_v0 src/integration/trapezium_v0.cpp)
-target_link_libraries (trapezium_v0 NM_LIB ${NM_LIBRARIES})
+# add_executable(trapezium_v0 src/integration/trapezium_v0.cpp)
+# target_link_libraries (trapezium_v0 NM_LIB ${NM_LIBRARIES})
 
-add_executable(trapezium_v1 src/integration/trapezium_v1.cpp)
-target_link_libraries (trapezium_v1 NM_LIB ${NM_LIBRARIES})
+# add_executable(trapezium_v1 src/integration/trapezium_v1.cpp)
+# target_link_libraries (trapezium_v1 NM_LIB ${NM_LIBRARIES})
 
-add_executable(trapezium_v2 src/integration/trapezium_v2.cpp)
-target_link_libraries (trapezium_v2 NM_LIB ${NM_LIBRARIES})
+# add_executable(trapezium_v2 src/integration/trapezium_v2.cpp)
+# target_link_libraries (trapezium_v2 NM_LIB ${NM_LIBRARIES})
 
-add_executable(trapezium_v3 src/integration/trapezium_v3.cpp)
-target_link_libraries (trapezium_v3 NM_LIB ${NM_LIBRARIES})
+# add_executable(trapezium_v3 src/integration/trapezium_v3.cpp)
+# target_link_libraries (trapezium_v3 NM_LIB ${NM_LIBRARIES})
 
-add_executable(montecarlo src/integration/montecarlo.cpp)
-target_link_libraries (montecarlo NM_LIB ${NM_LIBRARIES})
+# add_executable(montecarlo src/integration/montecarlo.cpp)
+# target_link_libraries (montecarlo NM_LIB ${NM_LIBRARIES})
 
-add_executable(tridiag src/tridiag/tridiag.cpp)
-target_link_libraries (tridiag NM_LIB ${NM_LIBRARIES})
+# add_executable(tridiag src/tridiag/tridiag.cpp)
+# target_link_libraries (tridiag NM_LIB ${NM_LIBRARIES})
 
-add_executable(rk2 src/ode/rk2.cpp)
-target_link_libraries (rk2 NM_LIB ${NM_LIBRARIES})
+# add_executable(rk2 src/ode/rk2.cpp)
+# target_link_libraries (rk2 NM_LIB ${NM_LIBRARIES})
 
-add_executable(lorenz src/ode/lorenz.cpp)
-target_link_libraries (lorenz NM_LIB ${NM_LIBRARIES})
+# add_executable(lorenz src/ode/lorenz.cpp)
+# target_link_libraries (lorenz NM_LIB ${NM_LIBRARIES})
 
-add_executable(advection src/pde/advection.cpp)
-target_link_libraries (advection NM_LIB ${NM_LIBRARIES})
+# add_executable(advection src/pde/advection.cpp)
+# target_link_libraries (advection NM_LIB ${NM_LIBRARIES})
 
-add_executable(advectionCN src/pde/advection_CN.cpp)
-target_link_libraries (advectionCN NM_LIB ${NM_LIBRARIES})
+# add_executable(advectionCN src/pde/advection_CN.cpp)
+# target_link_libraries (advectionCN NM_LIB ${NM_LIBRARIES})
 
-add_executable(diffusion src/pde/diffusion.cpp)
-target_link_libraries (diffusion NM_LIB ${NM_LIBRARIES})
+# add_executable(diffusion src/pde/diffusion.cpp)
+# target_link_libraries (diffusion NM_LIB ${NM_LIBRARIES})
 
-add_executable(meanvalue src/mcmc/meanvalue.cpp)
-target_link_libraries (meanvalue NM_LIB ${NM_LIBRARIES})
+# add_executable(meanvalue src/mcmc/meanvalue.cpp)
+# target_link_libraries (meanvalue NM_LIB ${NM_LIBRARIES})
 
-add_executable(isampling src/mcmc/isampling.cpp)
-target_link_libraries (isampling NM_LIB ${NM_LIBRARIES})
+# add_executable(isampling src/mcmc/isampling.cpp)
+# target_link_libraries (isampling NM_LIB ${NM_LIBRARIES})
 
-add_executable(diagnosing src/misc/diagnosing.cpp)
-target_link_libraries (diagnosing NM_LIB ${NM_LIBRARIES})
+# add_executable(diagnosing src/misc/diagnosing.cpp)
+# target_link_libraries (diagnosing NM_LIB ${NM_LIBRARIES})
 
-add_executable(adiabatic src/pde/adiabatic.cpp)
+add_executable(adiabatic src/examples/adiabatic.cpp)
 target_link_libraries (adiabatic NM_LIB ${NM_LIBRARIES})
 
+add_executable(galaxy src/examples/galaxy.cpp)
+target_link_libraries (galaxy NM_LIB ${NM_LIBRARIES})
 
 # show summary
 message (STATUS "CMAKE_SYSTEM .......... = ${CMAKE_SYSTEM}")
