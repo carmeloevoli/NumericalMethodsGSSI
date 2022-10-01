@@ -7,6 +7,8 @@
 #include "timer.h"
 #include "utils.h"
 
+#define EPSILONZ 1e-10
+
 namespace NM {
 
 constexpr double kpc = 1;
@@ -22,14 +24,14 @@ constexpr double u = 4. * 1e6 * cm / s;
 constexpr double D = 3e28 * cm * cm / s;
 constexpr double beta = u * HaloSize / D;
 
-// double f(double z) {
-//   constexpr double C = diskSize * Q_0 / u;
-//   return C * std::exp(beta) * (1. - std::exp(-beta * (1. - std::fabs(z) / HaloSize)));
-// }
+double f(double z) {
+  constexpr double C = diskSize * Q_0 / u;
+  return C * std::exp(beta) * (1. - std::exp(-beta * (1. - std::fabs(z) / HaloSize)));
+}
 
-double f(double z) { return diskSize * HaloSize * Q_0 / D * (1. - std::fabs(z) / HaloSize); }
+// double f(double z) { return diskSize * HaloSize * Q_0 / D * (1. - std::fabs(z) / HaloSize); }
 
-std::vector<double> CrankNicolson(std::vector<double> z, std::vector<double> f, double dt) {
+std::vector<double> Diffusion(std::vector<double> z, std::vector<double> f, double dt) {
   auto N = f.size();
   std::vector<double> fNew(N);
   std::fill(fNew.begin(), fNew.end(), 0.);
@@ -50,8 +52,56 @@ std::vector<double> CrankNicolson(std::vector<double> z, std::vector<double> f, 
 
   for (size_t i = 1; i < N - 1; ++i) {
     const auto Q = 2. * diskSize * Q_0 * NM::Gaussian1D(std::fabs(z.at(i)), diskSize);
-    rhs.at(i - 1) = dt * Q;
+    rhs.at(i - 1) = dt * Q / 2.;
     rhs.at(i - 1) += 0.5 * alpha * f.at(i + 1) + (1. - alpha) * f.at(i) + 0.5 * alpha * f.at(i - 1);
+  }
+
+  std::vector<double> solution(N - 2);
+  GSL::gsl_linalg_solve_tridiag(centralDiagonal, upperDiagonal, lowerDiagonal, rhs, solution);
+
+  for (size_t i = 1; i < N - 1; ++i) fNew[i] = solution[i - 1];
+  return fNew;
+}
+
+std::vector<double> Advection(std::vector<double> z, std::vector<double> f, double dt) {
+  auto N = f.size();
+  std::vector<double> fNew(N);
+  std::fill(fNew.begin(), fNew.end(), 0.);
+  const auto dz = z[1] - z[0];
+
+  std::vector<double> centralDiagonal(N - 2);
+  std::vector<double> rhs(N - 2);
+  std::vector<double> lowerDiagonal(N - 3);
+  std::vector<double> upperDiagonal(N - 3);
+
+  const auto gamma = u * dt / dz;
+
+  for (size_t i = 1; i < N - 1; ++i) {
+    if (z.at(i) > EPSILONZ) {
+      centralDiagonal.at(i - 1) = 1. + 0.5 * gamma;
+      if (i != 1) lowerDiagonal.at(i - 2) = -0.5 * gamma;
+      if (i != N - 2) upperDiagonal.at(i - 1) = 0.;
+    } else if (z.at(i) < -EPSILONZ) {
+      centralDiagonal.at(i - 1) = 1. + 0.5 * gamma;
+      if (i != 1) lowerDiagonal.at(i - 2) = 0.;
+      if (i != N - 2) upperDiagonal.at(i - 1) = -0.5 * gamma;
+    } else {
+      centralDiagonal.at(i - 1) = 1.;
+      if (i != 1) lowerDiagonal.at(i - 2) = 0.;
+      if (i != N - 2) upperDiagonal.at(i - 1) = 0.;
+    }
+  }
+
+  for (size_t i = 1; i < N - 1; ++i) {
+    const auto Q = 2. * diskSize * Q_0 * NM::Gaussian1D(std::fabs(z.at(i)), diskSize);
+    rhs.at(i - 1) = dt * Q / 2.;
+    if (z.at(i) > EPSILONZ) {
+      rhs.at(i - 1) += 0.5 * gamma * f.at(i - 1) + (1. - 0.5 * gamma) * f.at(i);
+    } else if (z.at(i) < -EPSILONZ) {
+      rhs.at(i - 1) += (1. - 0.5 * gamma) * f.at(i) + 0.5 * gamma * f.at(i + 1);
+    } else {
+      rhs.at(i - 1) += f.at(i);
+    }
   }
 
   std::vector<double> solution(N - 2);
@@ -79,9 +129,12 @@ double runSim(int zOrder, std::string outputFilename) {
   std::vector<double> f(zSteps);
   std::fill(f.begin(), f.end(), 0.);
 
-  const double dt = 0.01;
+  const double dt = 0.1;
   for (size_t i = 0; i < 10; ++i) {
-    for (size_t j = 0; j < 20000; ++j) f = NM::CrankNicolson(z, f, dt);
+    for (size_t j = 0; j < 20000; ++j) {
+      f = NM::Diffusion(z, f, dt);
+      f = NM::Advection(z, f, dt);
+    }
     NM::saveSolution(z, f, i, outputFilename);
   }
 
