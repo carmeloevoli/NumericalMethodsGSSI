@@ -1,5 +1,6 @@
 #include "utils.h"
 
+#include <cmath>
 #include <fstream>
 #include <iostream>
 
@@ -11,6 +12,17 @@ std::vector<double> linspace(double xMin, double xMax, size_t xSize) {
   const auto h = (xMax - xMin) / (double)(xSize - 1);
   for (size_t i = 0; i < xSize; ++i) {
     const auto xi = xMin + (double)i * h;
+    x.emplace_back(xi);
+  }
+  return x;
+}
+
+std::vector<double> logspace(double xMin, double xMax, size_t xSize) {
+  std::vector<double> x;
+  x.reserve(xSize);
+  const auto delta_log = std::exp(std::log(xMax / xMin) / (xSize - 1));
+  for (size_t i = 0; i < xSize; ++i) {
+    const auto xi = std::exp(std::log(xMin) + (double)i * std::log(delta_log));
     x.emplace_back(xi);
   }
   return x;
