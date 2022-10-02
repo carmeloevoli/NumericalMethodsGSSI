@@ -3,6 +3,7 @@
 #include <cmath>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 
 namespace NM {
 
@@ -36,7 +37,7 @@ void saveSolution(std::vector<double> x, std::vector<double> f, int counter, std
   std::ofstream txtfile;
   txtfile.open("output/" + filename + "_" + std::to_string(counter) + ".txt");
   if (txtfile.is_open()) {
-    for (size_t i = 0; i < x.size(); ++i) txtfile << x.at(i) << " " << f.at(i) << "\n";
+    for (size_t i = 0; i < x.size(); ++i) txtfile << std::setprecision(7) << x.at(i) << " " << f.at(i) << "\n";
     txtfile.close();
   } else
     std::cout << "!Unable to open file";
