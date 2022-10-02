@@ -114,7 +114,7 @@ std::vector<double> Advection(std::vector<double> z, std::vector<double> f, doub
 }  // namespace NM
 
 void printSolution(std::string outputFilename) {
-  const auto z = NM::linspace(-NM::HaloSize, NM::HaloSize, 10000);
+  const auto z = NM::linspace(-NM::HaloSize, NM::HaloSize, 1000);
   std::vector<double> f_z;
   for (auto& z_i : z) f_z.push_back(NM::f(z_i));
   NM::saveSolution(z, f_z, 0, outputFilename);
@@ -131,7 +131,7 @@ double runSim(int zOrder, std::string outputFilename) {
 
   const double dt = 0.1;
   for (size_t i = 0; i < 10; ++i) {
-    for (size_t j = 0; j < 20000; ++j) {
+    for (size_t j = 0; j < 30000; ++j) {
       f = NM::Diffusion(z, f, dt);
       f = NM::Advection(z, f, dt);
     }
@@ -146,6 +146,6 @@ int main() {
   std::cout << "t_dif : " << std::pow(NM::HaloSize, 2) / NM::D << "\n";
   std::cout << "beta : " << NM::beta << "\n";
 
-  runSim(9, "galaxy");
+  runSim(10, "galaxy");
   return 0;
 }
