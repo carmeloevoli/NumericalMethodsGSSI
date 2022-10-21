@@ -121,6 +121,54 @@ std::vector<double> AdvectionAntiParallel(std::vector<double> z, std::vector<dou
   return fNew;
 }
 
+std::vector<double> AdvectionAntiParallelLax(std::vector<double> z, std::vector<double> f, double dt) {
+  auto N = f.size();
+  std::vector<double> fNew(N);
+  std::fill(fNew.begin(), fNew.end(), 0.);
+  const auto dz = z[1] - z[0];
+
+  std::vector<double> centralDiagonal(N - 2);
+  std::vector<double> rhs(N - 2);
+  std::vector<double> solution(N - 2);
+  std::vector<double> lowerDiagonal(N - 3);
+  std::vector<double> upperDiagonal(N - 3);
+
+  const auto gamma = u * dt / 4. / dz;
+
+  for (size_t i = 1; i < N - 1; ++i) {
+    if (z.at(i) > EPSILONZ) {
+      centralDiagonal.at(i - 1) = 1.;
+      if (i != 1) lowerDiagonal.at(i - 2) = -gamma;
+      if (i != N - 2) upperDiagonal.at(i - 1) = gamma;
+    } else if (z.at(i) < -EPSILONZ) {
+      centralDiagonal.at(i - 1) = 1.;
+      if (i != 1) lowerDiagonal.at(i - 2) = gamma;
+      if (i != N - 2) upperDiagonal.at(i - 1) = -gamma;
+    } else {
+      centralDiagonal.at(i - 1) = 1.;
+      if (i != 1) lowerDiagonal.at(i - 2) = 0.;
+      if (i != N - 2) upperDiagonal.at(i - 1) = 0.;
+    }
+  }
+
+  for (size_t i = 1; i < N - 1; ++i) {
+    const auto Q = 2. * diskSize * Q_0 * NM::Gaussian1D(std::fabs(z.at(i)), diskSize);
+    rhs.at(i - 1) = dt * Q / NOPERATORS;
+    if (z.at(i) > EPSILONZ) {
+      rhs.at(i - 1) += gamma * f.at(i - 1) + f.at(i) - gamma * f.at(i + 1);
+    } else if (z.at(i) < -EPSILONZ) {
+      rhs.at(i - 1) += -gamma * f.at(i - 1) + f.at(i) + gamma * f.at(i + 1);
+    } else {
+      rhs.at(i - 1) += f.at(i);
+    }
+  }
+
+  GSL::gsl_linalg_solve_tridiag(centralDiagonal, upperDiagonal, lowerDiagonal, rhs, solution);
+
+  for (size_t i = 1; i < N - 1; ++i) fNew[i] = solution[i - 1];
+  return fNew;
+}
+
 std::vector<double> AdvectionParallel(std::vector<double> z, std::vector<double> f, double dt) {
   auto N = f.size();
   std::vector<double> fNew(N);
@@ -136,11 +184,10 @@ std::vector<double> AdvectionParallel(std::vector<double> z, std::vector<double>
   const auto gamma = u * dt / dz;
 
   for (size_t i = 1; i < N - 1; ++i) {
-      centralDiagonal.at(i - 1) = 1. + 0.5 * gamma;
-      if (i != 1) lowerDiagonal.at(i - 2) = -0.5 * gamma;
-      if (i != N - 2) upperDiagonal.at(i - 1) = 0.;
-    }
-  
+    centralDiagonal.at(i - 1) = 1. + 0.5 * gamma;
+    if (i != 1) lowerDiagonal.at(i - 2) = -0.5 * gamma;
+    if (i != N - 2) upperDiagonal.at(i - 1) = 0.;
+  }
 
   for (size_t i = 1; i < N - 1; ++i) {
     const auto Q = 2. * diskSize * Q_0 * NM::Gaussian1D(std::fabs(z.at(i)), diskSize);
@@ -159,7 +206,7 @@ std::vector<double> AdvectionParallel(std::vector<double> z, std::vector<double>
 void printSolution(std::string outputFilename) {
   const auto z = NM::linspace(-NM::HaloSize, NM::HaloSize, 1000);
   std::vector<double> f_z;
-  for (auto& z_i : z) f_z.push_back(NM::f_parallel(z_i));
+  for (auto& z_i : z) f_z.push_back(NM::f_antiparallel(z_i));
   NM::saveSolution(z, f_z, 0, outputFilename);
 }
 
@@ -176,7 +223,7 @@ double runSim(int zOrder, std::string outputFilename) {
   for (size_t i = 0; i < 100; ++i) {
     for (size_t j = 0; j < 10000; ++j) {
       f = NM::Diffusion(z, f, dt);
-      f = NM::AdvectionParallel(z, f, dt);
+      f = NM::AdvectionAntiParallel(z, f, dt);
     }
     NM::saveSolution(z, f, i, outputFilename);
   }
