@@ -37,43 +37,51 @@ def plot_analytical_derivative(ax, filename):
     ax.plot(z, dfdz, '--', lw=1, color='k')
     
 def plot_CN():
-    fig = plt.figure(figsize=(10.5,12.))
+    fig = plt.figure(figsize=(15.5,7.5))
 
-    gs = gridspec.GridSpec(2, 1, height_ratios=(2, 1))
-    gs.update(wspace=0.025, hspace=0.1)
+    gs = gridspec.GridSpec(1, 2)
+    gs.update(wspace=0.15, hspace=0.1)
     
     #ax1 = fig.add_subplot(211)
     ax1 = plt.subplot(gs[0])
 
     ax1.set_xlim([-10., 10.])
-    ax1.set_ylim([0., 400.])
-    ax1.set_ylabel('f(z) / f_0')
-    ax1.set_title(r'$\beta = 5$')
-    ax1.set_xticklabels([])
+    #ax1.set_ylim([0., 400.])
+    ax1.set_ylim([0., 4.2])
+    ax1.set_ylabel('f(z)')
+    ax1.set_xlabel('z')
+
+    #ax1.set_title(r'$\beta = 5$')
+    #ax1.set_xticklabels([])
     
-    plot_numerical_solution(ax1, 'output/galaxy_7_99.txt', 'tab:green', r'$N = 2^7$')
-    plot_numerical_solution(ax1, 'output/galaxy_8_99.txt', 'tab:blue', r'$N = 2^8$')
-    plot_numerical_solution(ax1, 'output/galaxy_9_99.txt', 'tab:olive', r'$N = 2^9$')
-    plot_numerical_solution(ax1, 'output/galaxy_10_99.txt', 'tab:red', r'$N = 2^{10}$')
+    plot_numerical_solution(ax1, 'output/galaxy_parallel_7_99.txt', 'tab:green', r'$N = 2^7$')
+    plot_numerical_solution(ax1, 'output/galaxy_parallel_8_99.txt', 'tab:blue', r'$N = 2^8$')
+    plot_numerical_solution(ax1, 'output/galaxy_parallel_9_99.txt', 'tab:olive', r'$N = 2^9$')
+    plot_numerical_solution(ax1, 'output/galaxy_parallel_10_99.txt', 'tab:red', r'$N = 2^{10}$')
     plot_analytical_solution(ax1, 'output/solution_0.txt')
+    
+    #ax1.text(-9.0, 370., r'$\beta = 5$, UpWind Scheme', fontsize=18)
     
     ax1.legend()
     
     #ax2 = fig.add_subplot(212)
     ax2 = plt.subplot(gs[1])
 
-    ax2.set_xlim([-10., 10.])
-    ax2.set_ylim([-0.2, 0.2])
-    ax2.set_ylabel('residual')
+    ax2.set_xlim([-1., 1.])
+    ax2.set_ylim([-2., 2.])
+    ax2.set_ylabel('df/dz(z)')
     ax2.set_xlabel('z')
 
-    ax2.plot([-10.,10], [0.,0.], linestyle='--', color='tab:gray', lw=1.5)
-    plot_numerical_residual(ax2, 'output/galaxy_7_99.txt', 'output/solution_0.txt', 'tab:green', r'$N = 2^7$')
-    plot_numerical_residual(ax2, 'output/galaxy_8_99.txt', 'output/solution_0.txt', 'tab:blue', r'$N = 2^8$')
-    plot_numerical_residual(ax2, 'output/galaxy_9_99.txt', 'output/solution_0.txt', 'tab:olive', r'$N = 2^9$')
-    plot_numerical_residual(ax2, 'output/galaxy_10_99.txt', 'output/solution_0.txt', 'tab:red', r'$N = 2^{10}$')
+    ax2.yaxis.tick_right()
+    ax2.yaxis.set_label_position("right")
+    
+    plot_numerical_solution(ax2, 'output/galaxy_parallel_7_99.txt', 'tab:green', r'$N = 2^7$')
+    plot_numerical_solution(ax2, 'output/galaxy_parallel_8_99.txt', 'tab:blue',  r'$N = 2^8$')
+    plot_numerical_derivative(ax2, 'output/galaxy_parallel_9_99.txt', 'tab:olive', r'$N = 2^9$')
+    plot_numerical_derivative(ax2, 'output/galaxy_parallel_10_99.txt', 'tab:red', r'$N = 2^{10}$')
+    plot_analytical_derivative(ax2, 'output/solution_0.txt')
 
-    plt.savefig('galaxy.pdf',bbox_inches='tight')
+    plt.savefig('galaxy_parallel.pdf',bbox_inches='tight')
     
 def plot_der():
     fig, ax = make_plot()
@@ -81,6 +89,12 @@ def plot_der():
     ax.set_xlim([-1,1])
     ax.set_ylim([-2,2])
     ax.set_title(r'$\beta = 5$')
+
+#    ax2.plot([-10.,10], [0.,0.], linestyle='--', color='tab:gray', lw=1.5)
+#    plot_numerical_residual(ax2, 'output/galaxy_7_99.txt', 'output/solution_0.txt', 'tab:green', r'$N = 2^7$')
+#    plot_numerical_residual(ax2, 'output/galaxy_8_99.txt', 'output/solution_0.txt', 'tab:blue', r'$N = 2^8$')
+#    plot_numerical_residual(ax2, 'output/galaxy_9_99.txt', 'output/solution_0.txt', 'tab:olive', r'$N = 2^9$')
+#    plot_numerical_residual(ax2, 'output/galaxy_10_99.txt', 'output/solution_0.txt', 'tab:red', r'$N = 2^{10}$')
 
     plot_numerical_solution(ax, 'output/galaxy_7_99.txt', 'tab:green', r'$N = 2^7$')
     plot_numerical_solution(ax, 'output/galaxy_8_99.txt', 'tab:blue',  r'$N = 2^8$')
