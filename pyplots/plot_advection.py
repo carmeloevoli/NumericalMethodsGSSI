@@ -26,11 +26,11 @@ def plot_analytical_solutions(ax):
     ax.plot(x, y, '--', lw=1, color='k')
 
 def plot_numerical_solutions(ax, filename, linestyle, color):
-#    plot_filename(ax, filename + '_0.txt', 'k', ':')
-#    plot_filename(ax, filename + '_2.txt', 'tab:orange', linestyle)
-#    plot_filename(ax, filename + '_4.txt', 'tab:olive', linestyle)
-#    plot_filename(ax, filename + '_6.txt', 'tab:green', linestyle)
-#    plot_filename(ax, filename + '_8.txt', 'tab:blue', linestyle)
+    plot_filename(ax, filename + '_0.txt', 'k', ':')
+    plot_filename(ax, filename + '_2.txt', 'tab:orange', linestyle)
+    plot_filename(ax, filename + '_4.txt', 'tab:olive', linestyle)
+    plot_filename(ax, filename + '_6.txt', 'tab:green', linestyle)
+    plot_filename(ax, filename + '_8.txt', 'tab:blue', linestyle)
     plot_filename(ax, filename + '_1.txt', color, linestyle)
 
 def make_plot():
@@ -85,8 +85,24 @@ def plot_CN():
     ax.text(0.75, 0.60, r'$2^{11}$', color='tab:blue')
     plt.savefig('AdvectionCN.pdf')
     
+def plot_box_solution(ax, filename, color, linestyle = '-'):
+    z, f = np.loadtxt(filename + '.txt', skiprows=0, usecols=(0,1), unpack=True)
+    ax.plot(z, f, color=color, linestyle=linestyle)
+    
+def plot_box():
+    fig, ax = make_plot()
+    ax.set_xlim([0,1])
+    ax.set_ylim([0, 1.1])
+    plot_box_solution(ax, 'output/box_5_0', 'tab:blue')
+    plot_box_solution(ax, 'output/box_5_2', 'tab:green', linestyle='--')
+    plot_box_solution(ax, 'output/box_5_4', 'tab:red', linestyle='--')
+    plot_box_solution(ax, 'output/box_5_6', 'tab:orange', linestyle='--')
+    plot_box_solution(ax, 'output/box_5_8', 'tab:olive', linestyle='--')
+    plt.savefig('AdvectionBox4.pdf')
+
 if __name__== "__main__":
-    plot_Upwind()
-    plot_Laxw()
-    plot_Laxf()
-    plot_CN()
+#    plot_Upwind()
+#    plot_Laxw()
+#    plot_Laxf()
+#    plot_CN()
+    plot_box()

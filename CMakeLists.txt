@@ -88,6 +88,9 @@ target_link_libraries (adiabatic NM_LIB ${NM_LIBRARIES})
 add_executable(galaxy src/examples/galaxy.cpp)
 target_link_libraries (galaxy NM_LIB ${NM_LIBRARIES})
 
+add_executable(advectedbox src/examples/advectedbox.cpp)
+target_link_libraries (advectedbox NM_LIB ${NM_LIBRARIES})
+
 # show summary
 message (STATUS "CMAKE_SYSTEM .......... = ${CMAKE_SYSTEM}")
 message (STATUS "BUILD_SHARED_LIBS ..... = ${BUILD_SHARED_LIBS}")
