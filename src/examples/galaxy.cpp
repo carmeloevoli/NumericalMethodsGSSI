@@ -206,7 +206,7 @@ std::vector<double> AdvectionParallel(std::vector<double> z, std::vector<double>
 void printSolution(std::string outputFilename) {
   const auto z = NM::linspace(-NM::HaloSize, NM::HaloSize, 1000);
   std::vector<double> f_z;
-  for (auto& z_i : z) f_z.push_back(NM::f_parallel(z_i));
+  for (auto& z_i : z) f_z.push_back(NM::f_antiparallel(z_i));
   NM::saveSolution(z, f_z, 0, outputFilename);
 }
 
@@ -220,10 +220,12 @@ double runSim(int zOrder, std::string outputFilename) {
   std::fill(f.begin(), f.end(), 0.);
 
   const double dt = 0.1;
+  std::cout << "Courant adv no : " << NM::u * dt / (z[1] - z[0]) << "\n";
+  std::cout << "Courant dif no : " << NM::D * dt / std::pow(z[1] - z[0], 2.) << "\n";
   for (size_t i = 0; i < 100; ++i) {
     for (size_t j = 0; j < 10000; ++j) {
       f = NM::Diffusion(z, f, dt);
-      f = NM::AdvectionParallel(z, f, dt);
+      f = NM::AdvectionAntiParallel(z, f, dt);
     }
     NM::saveSolution(z, f, i, outputFilename);
   }
@@ -236,10 +238,10 @@ int main() {
   std::cout << "t_dif : " << std::pow(NM::HaloSize, 2) / NM::D << "\n";
   std::cout << "beta : " << NM::beta << "\n";
 
-  runSim(6, "galaxy_parallel_6");
-  runSim(7, "galaxy_parallel_7");
-  runSim(8, "galaxy_parallel_8");
-  runSim(9, "galaxy_parallel_9");
-  runSim(10, "galaxy_parallel_10");
+  runSim(6, "galaxy_upwind_6");
+  runSim(7, "galaxy_upwind_7");
+  runSim(8, "galaxy_upwind_8");
+  runSim(9, "galaxy_upwind_9");
+  runSim(10, "galaxy_upwind_10");
   return 0;
 }
