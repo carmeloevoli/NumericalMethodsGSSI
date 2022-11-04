@@ -8,10 +8,12 @@ from scipy import interpolate
 
 def plot_analytical_solution(ax, filename):
     z, f = np.loadtxt(filename, skiprows=0, usecols=(0,1), unpack=True)
+    print ("f_a range : ", min(f), max(f))
     ax.plot(z, f, '--', lw=1, color='k')
 
 def plot_numerical_solution(ax, filename, color, label, linestyle='-'):
     z, f = np.loadtxt(filename, skiprows=0, usecols=(0,1), unpack=True)
+    print ("f range : ", min(f), max(f))
     ax.plot(z, f, lw=2.5, color=color, label=label, linestyle=linestyle)
 
 def plot_numerical_residual(ax, filename, filename_a, color, label, linestyle='-'):
@@ -47,17 +49,16 @@ def plot_CN():
 
     ax1.set_xlim([-10., 10.])
     #ax1.set_ylim([0., 400.])
-    ax1.set_ylim([0., 4.2])
     ax1.set_ylabel('f(z)')
     ax1.set_xlabel('z')
 
     #ax1.set_title(r'$\beta = 5$')
     #ax1.set_xticklabels([])
     
-    plot_numerical_solution(ax1, 'output/galaxy_parallel_7_99.txt', 'tab:green', r'$N = 2^7$')
-    plot_numerical_solution(ax1, 'output/galaxy_parallel_8_99.txt', 'tab:blue', r'$N = 2^8$')
-    plot_numerical_solution(ax1, 'output/galaxy_parallel_9_99.txt', 'tab:olive', r'$N = 2^9$')
-    plot_numerical_solution(ax1, 'output/galaxy_parallel_10_99.txt', 'tab:red', r'$N = 2^{10}$')
+    plot_numerical_solution(ax1, 'output/galaxy_upwind_7_99.txt', 'tab:green', r'$N = 2^7$')
+    plot_numerical_solution(ax1, 'output/galaxy_upwind_8_99.txt', 'tab:blue', r'$N = 2^8$')
+    plot_numerical_solution(ax1, 'output/galaxy_upwind_9_99.txt', 'tab:olive', r'$N = 2^9$')
+    plot_numerical_solution(ax1, 'output/galaxy_upwind_10_99.txt', 'tab:red', r'$N = 2^{10}$')
     plot_analytical_solution(ax1, 'output/solution_0.txt')
     
     #ax1.text(-9.0, 370., r'$\beta = 5$, UpWind Scheme', fontsize=18)
@@ -75,13 +76,13 @@ def plot_CN():
     ax2.yaxis.tick_right()
     ax2.yaxis.set_label_position("right")
     
-    plot_numerical_solution(ax2, 'output/galaxy_parallel_7_99.txt', 'tab:green', r'$N = 2^7$')
-    plot_numerical_solution(ax2, 'output/galaxy_parallel_8_99.txt', 'tab:blue',  r'$N = 2^8$')
-    plot_numerical_derivative(ax2, 'output/galaxy_parallel_9_99.txt', 'tab:olive', r'$N = 2^9$')
-    plot_numerical_derivative(ax2, 'output/galaxy_parallel_10_99.txt', 'tab:red', r'$N = 2^{10}$')
+    plot_numerical_derivative(ax2, 'output/galaxy_upwind_7_99.txt', 'tab:green', r'$N = 2^7$')
+    plot_numerical_derivative(ax2, 'output/galaxy_upwind_8_99.txt', 'tab:blue',  r'$N = 2^8$')
+    plot_numerical_derivative(ax2, 'output/galaxy_upwind_9_99.txt', 'tab:olive', r'$N = 2^9$')
+    plot_numerical_derivative(ax2, 'output/galaxy_upwind_10_99.txt', 'tab:red', r'$N = 2^{10}$')
     plot_analytical_derivative(ax2, 'output/solution_0.txt')
 
-    plt.savefig('galaxy_parallel.pdf',bbox_inches='tight')
+    plt.savefig('galaxy_upwind.pdf',bbox_inches='tight')
     
 def plot_der():
     fig, ax = make_plot()
