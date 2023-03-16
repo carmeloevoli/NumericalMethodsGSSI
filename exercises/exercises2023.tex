@@ -3,22 +3,21 @@
 \usepackage{fullpage}
 \usepackage{exsheets}
 
-\linespread{1.1}
+\linespread{1.05}
 \setlength\parindent{0pt}
 
 \begin{document}
+\section{Exercise: The integration residual}
 
-\section{Problem: The integration residual}
-
-Compute the integral of 
+Compute numerically the integral of 
 %
 \begin{equation}
 \int_0^2 dx (x^4 - 2x + 1)
 \end{equation}
 %
-using the Simpson method and compare the result with the exact value as a function of the number of steps.
+using the Simpson method and compare the result with the exact value as a function of the number of steps (use $N = 2^4, 2^5, \dots$).
 
-\section{Problem: The nonlinear pendulum}
+\section{Exercise: The nonlinear pendulum}
 
 The equation of motion for the pendulum using Newton's second law can be written in terms of the displacement angle $\theta$ as:
 %
@@ -33,59 +32,45 @@ We first use the trick to turn the second-order equation into two first-order eq
 \frac{d\omega}{dt} & = & -\frac{g}{l} \sin \theta \label{eq:pendulum2}
 \end{eqnarray}
 
-\begin{question}
-Write a program to solve the equations~(\ref{eq:pendulum1}) and (\ref{eq:pendulum2}) using the second-order Runge-Kutta method for a pendulum with a 10 cm arm.
-Calculate the angle $\theta$ of displacement for several periods of the pendulum starting from the initial condition $(\theta, \omega) = (179^\circ, 0)$.
-\end{question}
+Write a program to solve the equations~(\ref{eq:pendulum1}) and (\ref{eq:pendulum2}) using the second-order Runge-Kutta method for a pendulum with a 10 cm arm and calculate the angle $\theta$ of displacement for several periods of the pendulum starting from the initial condition $(\theta, \omega) = (179^\circ, 0)$.
 
-\begin{question}
 Make a plot of the total energy of the system as a function of time:
 %
 \begin{equation}
 E = K + U = \frac{1}{2} m (\omega^2 L^2) + m g L (1 - \cos \theta) 
 \end{equation}
-\end{question}
+%
+Is it the energy conserved?
 
-\section{Problem: The 1-D diffusion equation}
+\section{Exercise: The 1-D diffusion equation}
 
 The 1-dimensional diffusion equation assuming constant diffusion coefficient and steady state is
 %
 \begin{equation}\label{eq:diffusion}
--D\frac{\partial^2 f(x)}{\partial x^2} = Q(x)
+-D\frac{\partial^2 u(x)}{\partial x^2} = Q(x)
 \end{equation}
 %
-where $x$ is a spatial coordinate between $[-H,H]$ and we assume as boundary conditions: $f(x = \pm 1) = 0$.
+where $x$ is a spatial coordinate between $[-H,H]$. The boundary conditions are given as $u(x = \pm H) = 0$.
 
-To provide us with an analytical solution (with the correct boundary conditions) we prescribe 
+An analytical solution (with the correct boundary conditions) can be found by prescribing that 
 %
 \begin{equation}
-\tilde f(x) = \cos(\pi x / 2)
+\tilde u(x) = \cos(\pi x / 2)
 \end{equation}
 %
-to be an analytical solution and we derive the correspondent source term using equation~(\ref{eq:diffusion}):
+is a solution and by this deriving the source term using equation~(\ref{eq:diffusion}):
 %
 \begin{equation}
 Q(x) = \dots 
 \end{equation}
 
-Equipped now with a source term, we find numerically the solution of the equation~(\ref{eq:diffusion}) as a limit for $t \rightarrow \infty$ of the time-dependent equation:
+Equipped now with a source term, find the solution of the equation~(\ref{eq:diffusion}) as a limit for $t \rightarrow \infty$ of the time-dependent equation:
 %
 \begin{equation}
-\frac{\partial f(x,t)}{\partial t} -D \frac{\partial^2 f(x,t)}{\partial x^2} = Q(x)
+\frac{\partial u(x,t)}{\partial t} -D \frac{\partial^2 u(x,t)}{\partial x^2} = Q(x)
 \end{equation}
 
-We do this by using the Crank-Nicolson method and by plotting as a function of time a measure (e.g., 2-norm) of the distance between the numerical solution and the analytical one.
+To do so, use the Crank-Nicolson method and plot as a function of time a measure (e.g., 2-norm) of the distance between the numerical solution and the analytical one assuming as number of steps for the spatial grid $N = 2^8, 2^9, 2^{10}$. Comment on the error ratio in the limit  $t \rightarrow \infty$ for these 3 cases.
 
-\begin{question}
-Using the parameter values $H = 1$, $D = 0.1$, $dt = 10^{-3}$, $N = 2^8$ the plot should look like the following fig.
-\end{question}
-
-%\begin{center}
-%\includegraphics[scale=0.35]{DiffusionTimeEvolution.pdf}
-%\end{center}
-
-\begin{question}
-Show also the case for $N = 2^9$ and $N = 2^{10}$. What is the error ratio in the limit $t \rightarrow \infty$ between these cases?
-\end{question}
-
+For the physical parameters assume $H = 1$, $D = 0.1$.
 \end{document}
